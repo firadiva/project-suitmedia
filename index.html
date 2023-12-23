@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <title>SUITMEDIA</title>
+</head>
+
+<!--NAVBAR--> 
+<body>
+
+        <nav class="navbar">
+            <a href="#" class="logo"><img src="https://suitmedia.com/_nuxt/img/logo-white.081d3ce.png" width="105" height="45"></a>
+            <a href="#" class="nav" onclick="setActive(this)">Work</a>
+            <a href="#" class="nav">About</a>
+            <a href="#" class="nav">Services</a>
+            <a href="index.html" class="nav" onclick="setActive(this)">Ideas</a>
+            <a href="#" class="nav">Careers</a>
+            <a href="#" class="nav">Contact</a>
+    </nav>
+    <script>
+        function setActive(el) {
+            var links = document.querySelectorAll(".navbar a");
+            links.forEach(function(link) {
+                link.classList.remove("active");
+            });
+            el.classList.add("active");
+        }
+    </script>
+<script type="text/javascript">
+    let lastScrollTop = 0;
+
+window.addEventListener("scroll", function() {
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    if (currentScroll > lastScrollTop) {
+        
+        document.querySelector(".navbar").classList.remove("transparent");
+    } else {
+        
+        if (currentScroll <= 3) {
+           
+            document.querySelector(".navbar").classList.remove("transparent");
+        } else {
+
+            document.querySelector(".navbar").classList.add("transparent");
+        }
+    }
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+});
+  const nav = document.querySelector(".navbar");
+  let lastScrollY = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    if (lastScrollY < window.scrollY) {
+      nav.classList.add("navbar--hidden");
+    } else {
+      nav.classList.remove("navbar--hidden");
+    }
+    lastScrollY = window.scrollY;
+  });
+</script>
+
+<!--PARALLAX--> 
+<div class="wrapper_outer">
+    <div class="wrapper">
+        <div class="parallax_section" data-speed="0.5">
+            <div class="parallax_bg">
+            </div>
+            <div>
+                <h2>Ideas</h2>
+                <p>Where all our great things begin</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    let parallaxSections = document.querySelectorAll('.parallax_section');
+
+    window.addEventListener('scroll', function() {
+        parallaxSections.forEach(function(section) {
+            let speed = parseFloat(section.getAttribute('data-speed'));
+            let yOffset = window.pageYOffset;
+            let bg = section.querySelector('.parallax_bg');
+
+            bg.style.transform = `translateY(${yOffset * speed}px)`;
+        });
+    });
+});
+
+</script>
+
+
+<!--LABEL FOR SHOW DATA-->
+<div id="showingLabel" class="showing-label"></div>
+<script>
+    $(document).ready(function(){
+        $('#entries').on('change', function(){
+            var selectedValue = $(this).val(); 
+            showEntries(selectedValue); 
+        });
+
+        
+        function showEntries(entries){
+            $('.card').hide();
+            $('.card').slice(0, entries).show();
+            updateShowingLabel(1, entries, $('.card').length);
+        }
+
+        
+        function updateShowingLabel(pageNumber, entriesPerPage, totalItems) {
+            var startRange = (pageNumber - 1) * entriesPerPage + 1;
+            var endRange = Math.min(pageNumber * entriesPerPage, totalItems);
+            var showingLabel = "Showing " + startRange + " - " + endRange + " of " + totalItems;
+            $('#showingLabel').text(showingLabel);
+        }
+
+        
+        function showPage(whichPage){
+            if(whichPage < 1 || whichPage > totalPages) return false;
+
+            currentPage = whichPage;
+
+            $(".card-content .card").hide().slice((currentPage - 1) * limitPerPage, currentPage * limitPerPage).show();
+            updateShowingLabel(currentPage, $('#entries').val(), $('.card').length);
+
+            $(".pagination li").slice(1, -1).remove();
+            getPageList(totalPages, currentPage, paginationSize).forEach(item => {
+              $("<li>").addClass("page-item").addClass(item ? "current-page" : "dots")
+              .toggleClass("active", item === currentPage).append($("<a>").addClass("page-link")
+              .attr({href: "javascript:void(0)"}).text(item || "...")).insertBefore(".next-page");
+            });
+
+            $(".previous-page").toggleClass("disable", currentPage === 1);
+            $(".next-page").toggleClass("disable", currentPage === totalPages);
+            return true;
+        }
+
+       
+        function getPageList(totalPages, page, maxLength){
+            function range(start, end){
+                return Array.from(Array(end - start + 1), (_, i) => i + start);
+            }
+        
+            var sideWidth = maxLength < 9 ? 1 : 2;
+            var leftWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+            var rightWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+        
+            if(totalPages <= maxLength){
+                return range(1, totalPages);
+            }
+        
+            if(page <= maxLength - sideWidth - 1 - rightWidth){
+                return range(1, maxLength - sideWidth - 1).concat(0, range(totalPages - sideWidth + 1, totalPages));
+            }
+        
+            if(page >= totalPages - sideWidth - 1 - rightWidth){
+                return range(1, sideWidth).concat(0, range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+            }
+        
+            return range(1, sideWidth).concat(0, range(page - leftWidth, page + rightWidth), 0, range(totalPages - sideWidth + 1, totalPages));
+
+        }
+
+        var numberOfItems = $(".card-content .card").length;
+        var limitPerPage = 10;
+        var totalPages = Math.ceil(numberOfItems / limitPerPage);
+        var paginationSize = 7;
+        var currentPage;
+
+       
+        showEntries($('#entries').val());
+
+       
+        $(".pagination").append(
+            $("<li>").addClass("page-item").addClass("previous-page").append($("<a>").addClass("page-link").attr({href: "javascript:void(0)"}).text("Prev")),
+            $("<li>").addClass("page-item").addClass("next-page").append($("<a>").addClass("page-link").attr({href: "javascript:void(0)"}).text("Next"))
+        );
+
+        $(".card-content").show();
+        showPage(1);
+
+        
+        $(document).on("click", ".pagination li.current-page:not(.active)", function(){
+            return showPage(+$(this).text());
+        });
+
+        $(".next-page").on("click", function(){
+            return showPage(currentPage + 1);
+        });
+
+        $(".previous-page").on("click", function(){
+            return showPage(currentPage - 1);
+        });
+    });
+</script>
+
+
+   
+
+<!--SHOW ENTRIES-->
+<div class="show-entries">
+    <label for="entries">Show per page:</label>
+
+    <select id="entries">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#entries').on('change', function(){
+            var selectedValue = $(this).val(); 
+            showEntries(selectedValue); 
+        });
+
+      
+        function showEntries(entries){
+            $('.card').hide();
+        
+           
+            $('.card').slice(0, entries).show();
+        }
+
+
+        showEntries(10);
+    });
+</script>
+
+<!--SORT BY-->
+<div class="sort-by">
+<label for="entries">Sort By:</label>
+<select id="sortBy">
+    <option value="newest">Newest</option>
+    <option value="latest">Latest</option>
+</select>
+</div>
+</div>
+
+<script>
+$(document).ready(function(){
+    $('#entries').on('change', function(){
+        var selectedValue = $(this).val(); 
+        showEntries(selectedValue); 
+    });
+
+    $('#sortBy').on('change', function(){
+        var selectedSort = $(this).val();
+        sortCards(selectedSort);
+    });
+
+    function showEntries(entries){
+        $('.card').hide();
+        $('.card').slice(0, entries).show();
+    }
+
+    function sortCards(sortBy) {
+        var cards = $('.card');
+        if (sortBy === 'newest') {
+            cards.sort(function(a, b) {
+                var date1 = new Date($(a).find('h3').text());
+                var date2 = new Date($(b).find('h3').text());
+                return date2 - date1;
+            });
+        } else if (sortBy === 'latest') {
+            cards.sort(function(a, b) {
+                var date1 = new Date($(a).find('h3').text());
+                var date2 = new Date($(b).find('h3').text());
+                return date1 - date2;
+            });
+        }
+        $('.card-content').html(cards);
+        showEntries($('#entries').val());
+    }
+
+    showEntries(10);
+    sortCards('newest');
+});
+</script>
+
+
+<!--CARD--> 
+    <div class="container">
+        <div class="card-content" style="display: none">
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>5 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>5 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>6 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>6 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>6 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>7 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>7 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>8 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>8 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>9 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>9 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>10 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>10 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>10 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>11 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>12 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>13 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>14 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>15 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>16 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>16 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>16 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>17 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>18 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>19 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>19 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>19 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>20 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>21 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>21 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>22 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>23 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>26 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>29 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>28 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>28 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>29 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>29 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>30 SEPTEMBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>30 SEPTEMBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>1 OKTOBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>2 OKTOBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>2 OKTOBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>2 OKTOBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>3 OKTOBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>3 OKTOBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>4 OKTOBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>5 OKTOBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+            <div class="card">
+                <img src="images/card1.jpg">
+                <h3>6 OKTOBER 2022</h3>
+                <p>Kenali Tingkatan Influencers berdasarkan Jumlah Followers</p>
+            </div>
+        
+            <div class="card">
+                <img src="images/card2.webp">
+                <h3>6 OKTOBER 2022</h3>
+                <p>Jangan Asal Pilih Influencer, Berikut Cara Menyusun Strategi Influencer ...</p>
+            </div>
+
+        </div>
+    </div>
+      
+
+    <div class="pagination">
+        <li class = "page-item previous-page disable"><a class="page-link" href="#">Prev</a></li>
+        <li class = "page-item current-page active"><a class="page-link" href="#">1</a></li>
+        <li class = "page-item dots"><a class="page-link" href="#">...</a></li>
+        <li class = "page-item current-page"><a class="page-link" href="#">5</a></li>
+        <li class = "page-item current-page"><a class="page-link" href="#">6</a></li>
+        <li class = "page-item dots"><a class="page-link" href="#">...</a></li>
+        <li class = "page-item current-page"><a class="page-link" href="#">10</a></li>
+        <li class = "page-item next-page"><a class="page-link" href="#">Next</a></li>
+    </div>
+
+
+    <script type="text/javascript">
+        function getPageList(totalPages, page, maxLength){
+        function range(start, end){
+            return Array.from(Array(end - start + 1), (_, i) => i + start);
+        }
+
+        var sideWidth = maxLength < 9 ? 1 : 2;
+        var leftWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+        var rightWidth = (maxLength - sideWidth * 2 - 3) >> 1;
+
+        if(totalPages <= maxLength){
+            return range(1, totalPages);
+        }
+
+        if(page <= maxLength - sideWidth - 1 - rightWidth){
+            return range(1, maxLength - sideWidth - 1).concat(0, range(totalPages - sideWidth + 1, totalPages));
+        }
+
+        if(page >= totalPages - sideWidth - 1 - rightWidth){
+            return range(1, sideWidth).concat(0, range(totalPages- sideWidth - 1 - rightWidth - leftWidth, totalPages));
+        }
+
+        return range(1, sideWidth).concat(0, range(page - leftWidth, page + rightWidth), 0, range(totalPages - sideWidth + 1, totalPages));
+        }
+
+        $(function(){
+        var numberOfItems = $(".card-content .card").length;
+        var limitPerPage = 10; //How many card items visible per a page
+        var totalPages = Math.ceil(numberOfItems / limitPerPage);
+        var paginationSize = 7; //How many page elements visible in the pagination
+        var currentPage;
+
+        function showPage(whichPage){
+            if(whichPage < 1 || whichPage > totalPages) return false;
+
+            currentPage = whichPage;
+
+            $(".card-content .card").hide().slice((currentPage - 1) * limitPerPage, currentPage * limitPerPage).show();
+
+            $(".pagination li").slice(1, -1).remove();
+
+            getPageList(totalPages, currentPage, paginationSize).forEach(item => {
+            $("<li>").addClass("page-item").addClass(item ? "current-page" : "dots")
+            .toggleClass("active", item === currentPage).append($("<a>").addClass("page-link")
+            .attr({href: "javascript:void(0)"}).text(item || "...")).insertBefore(".next-page");
+            });
+            $(".first-page").toggleClass("disable", currentPage === 1);
+            $(".previous-page").toggleClass("disable", currentPage === 1);
+            $(".next-page").toggleClass("disable", currentPage === totalPages);
+            $(".last-page").toggleClass("disable", totalPages);
+            return true;
+        }
+
+        $(".pagination").append(
+            $("<li>").addClass("page-item").addClass("previous-page").append($("<a>").addClass("page-link").attr({href: "javascript:void(0)"}).text("Prev")),
+            $("<li>").addClass("page-item").addClass("next-page").append($("<a>").addClass("page-link").attr({href: "javascript:void(0)"}).text("Next"))
+
+        );
+
+        $(".card-content").show();
+        showPage(1);
+
+        $(document).on("click", ".pagination li.current-page:not(.active)", function(){
+            return showPage(+$(this).text());
+        });
+
+
+        $(".next-page").on("click", function(){
+            return showPage(currentPage + 1);
+        });
+
+        $(".previous-page").on("click", function(){
+            return showPage(currentPage - 1);
+        });
+
+       
+       
+        });
+
+            
+            
+        </script>
+
+
+</body>
+</html>

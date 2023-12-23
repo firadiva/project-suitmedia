@@ -1,0 +1,272 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: "Arial";
+}
+
+body{
+    --nav-height: 70px;
+    min-height: 100vh;
+}
+
+
+.logo{
+    position: relative;
+    width: 20px;
+    margin-right: 55%;
+    transition: 0.6s;
+    text-decoration: none;
+}
+
+.navbar{
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    padding-right: 200px;
+    background: #ff6600;
+    display:flex;
+    align-items: center;
+    z-index: 1;
+    transition: 0.3s;
+    text-decoration: none;
+    
+}
+.navbar.transparent{
+    background-color:#ff660071;
+}
+.navbar--hidden {
+    transform: translateY(calc(-1 * var(--nav-height)));
+    box-shadow: black;
+  }
+
+.navbar a {
+    position: relative;
+    color: white;
+    left: 130px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+
+.nav::before {
+    content: '';
+    position: absolute;
+    top: 120%;
+    left: 0;
+    width: 0;
+    height: 2.5px;
+    background: white;
+    transition: width 0.3s ease-in-out;
+}
+
+.navbar a:hover::before {
+width: 100%;
+}
+
+.nav{
+    text-decoration: none;
+}
+
+
+.wrapper_outer {
+    height: 100vh;
+    overflow: hidden;
+    color: black;
+}
+
+.wrapper {
+    height: 100%;
+    overflow-x: hidden;
+    perspective: 1px;
+}
+
+.parallax_section {
+    min-height: 100vh;
+    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100vw;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.parallax_bg {
+    background: url('https://images.unsplash.com/photo-1532622785990-d2c36a76f5a6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    clip-path: polygon(0 0, 100% 0, 100% 74%, 0 100%);
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-size: 150%;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+    height: 100%;
+    transform: translateZ(-1px) scale(1.5);
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.parallax_section h2 {
+    color: white;
+    font-size: 45px;
+}
+
+.parallax_section p {
+    color: white;
+    font-size: 16px;
+}
+
+.container{
+    min-height: 100vh;
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+
+
+}
+
+.card-content{
+    display:flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.card{
+    width: 250px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+}
+
+.card img{
+    width: 100%;
+    height: auto;
+}
+
+
+.card h3{
+    color:gray;
+    font-size: 14px;
+    margin-top: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 10px;
+    margin-bottom: 8px;
+}
+
+.card p{
+    font-size: 15px;
+    margin-bottom: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    font-weight: bold;
+}
+
+.pagination{
+    text-align: center;
+    margin: 30px 30px 60px;
+    user-select: none;
+    font-weight: bold;
+}
+
+.pagination li{
+    display: inline-block;
+    margin: 5px;
+   
+}
+
+.pagination li a{
+    color:black;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 45px;
+}
+
+.previous-page, .next-page, .last-page, .first-page{
+    color:black;
+    margin-bottom: 30%;
+    cursor:pointer;
+    margin-top: 30px;
+}
+
+.current-page, .dots{
+    color: white;
+    width: 35px;
+    border-radius: 20%;
+    cursor: pointer;
+    
+}
+
+.active{
+    color: white;
+    background: #ff6600;
+    
+}
+
+.disable{
+    background:transparent;
+}
+
+.showing-label{
+    position: relative;
+    display: inline-block;
+    font-size: 14px;
+    margin-left:6%;
+
+}
+
+.show-entries, .sort-by {
+    position: relative;
+    display: inline-block;
+    left: 43%;
+    font-size: 14px;
+    margin-right: 20px;
+    margin-top: 40px;
+    
+}
+
+.show-entries select, .sort-by select {
+    
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 24px 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Ubah nilai sesuai dengan keinginan Anda */
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    width: 130px;
+}
+
+.show-entries::before, .sort-by::before {
+    content: "\25BE";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+
+
